@@ -1,5 +1,6 @@
 macro "Stack_Reg" {
 	// Using substack function. 
+	// Also, take out the first one or few slices of each time point and build a new stack.
 	run("Close All");
 	
 	dir = getDirectory("Choose a Directory ");
@@ -12,12 +13,10 @@ macro "Stack_Reg" {
 		path = dir+list[i];
 		open(path);
 		run("StackReg", "transformation=[Rigid Body]");
-		saveAs("tiff", dir + "rg_" + list[i] );
+		run("Save");
+		//saveAs("tiff", dir + "rg_" + list[i] );
 		close();
-	}	
+	}// end for
+}// end macro	
 
-	for(i=0;i<list.length;i++){
-			print(dir+list[i]);	
-			ok = File.delete(dir+list[i]);
-	}	
-	//close();
+	
