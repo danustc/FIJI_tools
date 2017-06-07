@@ -1,9 +1,19 @@
+function Merge_stacks(path, name_flag, nfile){
+	// merge all the data files with the same name_flag.
+	options="open=["+path+"] number=" +nfile +" starting=1 increment=1 scale=100 file=" +name_flag+" or=[] sort";
+	run("Image Sequence...",options);
+	title_merge = getTitle();
+	merge_ID = getImageID();
+	return merge_ID;
+}
+
+
+
 macro "Tslice_splitter" {
 	// Using substack function. 
 	run("Close All");
 	nMed=getNumber("Slices per stack", 26);
 	n_groups = 4;
-	nZmx=nMed;
 	print(nMed);
 	dir = getDirectory("Choose a Directory ");
 	list = getFileList(dir); // An array containing the names of the files (hyperstacks).
@@ -17,21 +27,22 @@ macro "Tslice_splitter" {
 	residue_ID = 1; // Initialize residue_ID
 
 	for(ord_group = 0; ord_group < n_groups; ord_group ++){
-		
+		nZmx=nMed;
+		print("start from:", nstart);
 		options="open=["+path+"] number=" +p_groups +" starting=" + nstart+" increment=1 scale=100 file=MM or=[] sort";
 		run("Image Sequence...",options);
 		title_sequence = getTitle();
 		if(residue_ID <0){
 			selectImage(residue_ID);
 			title_res = getTitle();
-			run("Concatenate...", "  title=Full_sequence image1=]"+ title_res +" image2=" + title_sequence+" image3=[-- None --]");
+			run("Concatenate...", "  title=Full_sequence image1="+ title_res +" image2=" + title_sequence+" image3=[-- None --]");
 		}
 		
 		NS=nSlices;
 		original_ID = getImageID();
 	
 
-		NTS = parseInt(NS/nMed)-1;
+		NTS = floor(NS/nMed);
 		print("Number of time points:", NTS);
 		n_kept = NTS*nMed;
 		n_left = NS-n_kept;
@@ -41,39 +52,57 @@ macro "Tslice_splitter" {
 			run("Make Substack...","delete slices=" + n_kept+1 + "-" + NS); 
 			residue_ID = getImageID();
 			print("Residue ID:", residue_ID);
-			title = "MMResidue";
+			rename("MMResidue");
 		}//endif
-	
+		else{
+			print("No residues at this point!");
+			residue_ID = 0;  
+		}
 	
 	//while
 		nCount = 0;
-		print(original_ID);
+		print("original_ID:", original_ID);
 		selectImage(original_ID);
+		NS = nSlices;
+		print(NS);
 		
 		while(nZmx>1){
-			run("Make Substack...","delete slices=1-"+nSlices + "-" + nZmx); 
+			print(NS);
+			run("Make Substack...","delete slices=1-"+NS+ "-" + nZmx); 
 			//title=getTitle();
 			title = dirName+"_ZP_"+nCount + "_" + ord_group;
 			print(title);
 			saveAs("tiff",dir+title);
 			close();
-			NS=nSlices;
-			print(NS);
+			selectImage(original_ID);
+			NS = nSlices;
 			nCount++;
 			nZmx--;
 		} // end while	
-		if(nSlices>0){
+		if(NS>0){
 			title = dirName+"_ZP_"+nCount + "_" + ord_group;
 			saveAs("tiff", dir+title);
 			close();
-		}
+		}//endif
 		nstart +=p_groups;
+	} // end for
 
+	for(i=0;i<nMed;i++){
+			merge_ID = Merge_stacks(dir, "_ZP_"+i, n_groups);
+			selectImage(merge_ID);
+			title = dirName + "_ZP_"+i;
+			saveAs("tiff", dir+title);
+			close();
+			for(k=0; k<n_groups; k++){
+				ok = File.delete(dir+title+'_'+k+".tif");
+			}
+	}	// end for
+	
 		
 	/*for(i=0;i<list.length;i++){
 			print(dir+list[i]);	
-	*/		ok = File.delete(dir+list[i]);
+			ok = File.delete(dir+list[i]);
 	}	// end for
-	close();
+	*/
 }
 
