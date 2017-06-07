@@ -26,7 +26,7 @@ function Reference_Create(fpath, n_sub){
 	run("StackReg", "transformation=[Rigid Body]");
 	title_0B = getTitle(); // get the title from refID_0B
 	
-	run("MultiStackReg", "stack_1="+ title_0B+" action_1=[Use as Reference] file_1=[] stack_2="+ title_0A + " action_2=[Align to First Stack] transformation=[" + tmode+"]");
+	run("MultiStackReg", "stack_1="+ title_0B+" action_1=[Use as Reference] file_1=[] stack_2="+ title_0A + " action_2=[Align to First Stack] transformation=[Rigid Body]");
 	run("Concatenate...", "  title=ref_aligned image1=" +title_0A + " image2=" + title_0B +" image3=[-- None --]");	 
 
 	title_refnew = getTitle();
@@ -39,7 +39,7 @@ function Reference_Create(fpath, n_sub){
 		run("Make Substack...", "delete slices=1-" +nref); // delete next nref slices
 		rename("co_align");
 		title_align = getTitle();
-		run("MultiStackReg", "stack_1="+ title_refnew+" action_1=[Use as Reference] file_1=[] stack_2="+ title_align + " action_2=[Align to First Stack] transformation=[" + tmode+"]");
+		run("MultiStackReg", "stack_1="+ title_refnew+" action_1=[Use as Reference] file_1=[] stack_2="+ title_align + " action_2=[Align to First Stack] transformation=[Rigid Body]");
 		imageCalculator("Average create stack", title_refnew, title_align);
 		rename("Averaged");
 		ref_mean = getTitle();
@@ -65,9 +65,9 @@ macro "LongTS_Registration"{
 	for(i=0;i<flist.length;i++){
 		print(work_folder+flist[i]);	
 		path = work_folder+flist[i];
-		Reference_Create(path, "Affine");		
-		run("Save");
-		//saveAs("tiff", dir + "rg_" + list[i] );
+		Reference_Create(path, 100);		
+		//run("Save");
+		saveAs("tiff", dir + "rg_" + list[i] );
 		close();
 	}// end for
 	
