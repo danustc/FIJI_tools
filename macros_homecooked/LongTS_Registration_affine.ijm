@@ -28,7 +28,7 @@ function Reference_Create(fpath, n_sub, n_offset){
 	refID_0B = getImageID();
 	selectImage(refID_0B);
 	rename("headref_B");
-	run("StackReg", "transformation=[Rigid Body]");
+	run("StackReg", "transformation=[Affine]");
 	title_0B = getTitle(); // get the title from refID_0B
 	setSlice(nSlices);
 	run("Add Slice");
@@ -38,7 +38,7 @@ function Reference_Create(fpath, n_sub, n_offset){
 	run("Add Slice");
 	setSlice(1);
 	
-	run("MultiStackReg", "stack_1="+ title_0B+" action_1=[Use as Reference] file_1=[] stack_2="+ title_0A + " action_2=[Align to First Stack] transformation=[Rigid Body]");
+	run("MultiStackReg", "stack_1="+ title_0B+" action_1=[Use as Reference] file_1=[] stack_2="+ title_0A + " action_2=[Align to First Stack] transformation=[Affine]");
 	run("Concatenate...", "  title=ref_aligned image1=" +title_0A + " image2=" + title_0B +" image3=[-- None --]");	 
 	title_refnew = getTitle();
 	refID_new = getImageID();
@@ -66,7 +66,7 @@ function Reference_Create(fpath, n_sub, n_offset){
 		rename("co_align");
 		title_align = getTitle();
 		setSlice(1);
-		run("MultiStackReg", "stack_1="+ title_sum+" action_1=[Use as Reference] file_1=[] stack_2="+ title_align + " action_2=[Align to First Stack] transformation=[Rigid Body]");
+		run("MultiStackReg", "stack_1="+ title_sum+" action_1=[Use as Reference] file_1=[] stack_2="+ title_align + " action_2=[Align to First Stack] transformation=[Affine]");
 		/*
 		imageCalculator("Add create stack", title_sum, title_align);
 		meanID_new = getImageID();
@@ -105,7 +105,7 @@ function Reference_Create(fpath, n_sub, n_offset){
 	setSlice(NS);
 	run("Add Slice");
 	setSlice(1);
-	run("MultiStackReg", "stack_1="+ title_sum+" action_1=[Use as Reference] file_1=[] stack_2="+ title_align + " action_2=[Align to First Stack] transformation=[Rigid Body]");
+	run("MultiStackReg", "stack_1="+ title_sum+" action_1=[Use as Reference] file_1=[] stack_2="+ title_align + " action_2=[Align to First Stack] transformation=[Affine]");
 	run("Concatenate...", "  title=ref_aligned image1=" +title_refnew + " image2=" + title_align +" image3=[-- None --]");	 
 	finalID = getImageID();
 	setSlice(nSlices);
@@ -125,7 +125,7 @@ macro "LongTS_Registration"{
 	for(i=0;i<flist.length;i++){
 		print(work_folder+flist[i]);	
 		path = work_folder+flist[i];
-		finalID = Reference_Create(path, 200, 5);		
+		finalID = Reference_Create(path, 200, 0);		
 		saveAs("tiff", work_folder + "rg_" + flist[i] );
 		close();
 	}// end for
