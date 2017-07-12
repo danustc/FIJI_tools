@@ -12,9 +12,9 @@ macro "Stack_Reg" {
 		print(dir+list[i]);	
 		path = dir+list[i];
 		open(path);
-		run("StackReg", "transformation=[Rigid Body]");
-		run("Save");
-		//saveAs("tiff", dir + "rg_" + list[i] );
+		run("StackReg", "transformation=[Affine]");
+		//run("Save");
+		saveAs("tiff", dir + "af_" + list[i] );
 		close();
 	}// end for
 }// end macro	

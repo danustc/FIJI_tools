@@ -125,9 +125,10 @@ macro "LongTS_Registration"{
 	for(i=0;i<flist.length;i++){
 		print(work_folder+flist[i]);	
 		path = work_folder+flist[i];
-		finalID = Reference_Create(path, 200, 5);		
-		saveAs("tiff", work_folder + "rg_" + flist[i] );
+		finalID = Reference_Create(path, 300, 10);		
+		saveAs("tiff", work_folder +  "rg_"+ flist[i] );
 		close();
+		ok = File.delete(work_folder + flist[i]);
 	}// end for
 	
 }// end macro

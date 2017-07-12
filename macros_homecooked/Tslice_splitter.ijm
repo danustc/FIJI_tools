@@ -1,7 +1,7 @@
 macro "Tslice_splitter" {
 	// Using substack function. 
 	run("Close All");
-	nMed=getNumber("Slices per stack", 26);
+	nMed=getNumber("Z slices per stack", 9);
 	nZmx=nMed;
 	print(nMed);
 	dir = getDirectory("Choose a Directory ");
@@ -35,7 +35,7 @@ macro "Tslice_splitter" {
 	}
 	for(i=0;i<list.length;i++){
 			print(dir+list[i]);	
-			ok = File.delete(dir+list[i]);
+			//ok = File.delete(dir+list[i]);
 	}	
 	//close();
 }

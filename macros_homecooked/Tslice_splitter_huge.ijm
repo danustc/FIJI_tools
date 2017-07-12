@@ -12,21 +12,22 @@ function Merge_stacks(path, name_flag, nfile){
 macro "Tslice_splitter" {
 	// Using substack function. 
 	run("Close All");
-	nMed=getNumber("Slices per stack", 26);
-	n_groups = 4;
+	nMed=getNumber("Slices per stack", 23);
+	n_groups = 3;
 	print(nMed);
 	dir = getDirectory("Choose a Directory ");
 	list = getFileList(dir); // An array containing the names of the files (hyperstacks).
 	dirName = File.getName(dir); 
 	print(dirName);
+	Nfiles = list.length;
 	print("Number of files", list.length);
 	p_groups = parseInt(list.length/n_groups) +1;
 	print("Number of files per group:", p_groups);
 	nstart = 1;
 	path=dir+list[0];
 	residue_ID = 1; // Initialize residue_ID
-
-	for(ord_group = 0; ord_group < n_groups; ord_group ++){
+	ord_group = 0;
+	while(nstart<Nfiles){
 		nZmx=nMed;
 		print("start from:", nstart);
 		options="open=["+path+"] number=" +p_groups +" starting=" + nstart+" increment=1 scale=100 file=MM or=[] sort";
@@ -85,7 +86,8 @@ macro "Tslice_splitter" {
 			close();
 		}//endif
 		nstart +=p_groups;
-	} // end for
+		ord_group++;
+	} // end while
 
 	for(i=0;i<nMed;i++){
 			merge_ID = Merge_stacks(dir, "_ZP_"+i, n_groups);

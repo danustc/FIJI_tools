@@ -2,7 +2,7 @@
 // It creates a temporary directory, saves three images in it, 
 // display information about the files, then deletes the
 // files and the directory.
-macro "Remove_last"{
+macro "Stack_truncate_tail"{
 	
   	// Get path to temp directory
   	run("Close All");
