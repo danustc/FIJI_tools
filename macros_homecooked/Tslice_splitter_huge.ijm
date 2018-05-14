@@ -9,10 +9,10 @@ function Merge_stacks(path, name_flag, nfile){
 
 
 
-macro "Tslice_splitter" {
+macro "Tslice_splitter_huge" {
 	// Using substack function. 
 	run("Close All");
-	nMed=getNumber("Slices per stack", 23);
+	nMed=getNumber("Slices per stack", 26);
 	n_groups = 3;
 	print(nMed);
 	dir = getDirectory("Choose a Directory ");
@@ -21,7 +21,7 @@ macro "Tslice_splitter" {
 	print(dirName);
 	Nfiles = list.length;
 	print("Number of files", list.length);
-	p_groups = parseInt(list.length/n_groups) +1;
+	p_groups = parseInt(list.length/n_groups)+1;
 	print("Number of files per group:", p_groups);
 	nstart = 1;
 	path=dir+list[0];
@@ -30,7 +30,7 @@ macro "Tslice_splitter" {
 	while(nstart<Nfiles){
 		nZmx=nMed;
 		print("start from:", nstart);
-		options="open=["+path+"] number=" +p_groups +" starting=" + nstart+" increment=1 scale=100 file=MM or=[] sort";
+		options="open=["+path+"] number=" +p_groups +" starting=" + nstart+" increment=1 scale=100 file=rg or=[] sort";
 		run("Image Sequence...",options);
 		title_sequence = getTitle();
 		if(residue_ID <0){
@@ -71,7 +71,7 @@ macro "Tslice_splitter" {
 			print(NS);
 			run("Make Substack...","delete slices=1-"+NS+ "-" + nZmx); 
 			//title=getTitle();
-			title = dirName+"_ZP_"+nCount + "_" + ord_group;
+			title = dirName+"_TP_"+nCount + "_" + ord_group;
 			print(title);
 			saveAs("tiff",dir+title);
 			close();
@@ -81,7 +81,7 @@ macro "Tslice_splitter" {
 			nZmx--;
 		} // end while	
 		if(NS>0){
-			title = dirName+"_ZP_"+nCount + "_" + ord_group;
+			title = dirName+"_TP_"+nCount + "_" + ord_group;
 			saveAs("tiff", dir+title);
 			close();
 		}//endif
@@ -90,9 +90,10 @@ macro "Tslice_splitter" {
 	} // end while
 
 	for(i=0;i<nMed;i++){
-			merge_ID = Merge_stacks(dir, "_ZP_"+i, n_groups);
+			merge_ID = Merge_stacks(dir, "_TP_"+i, n_groups);
 			selectImage(merge_ID);
-			title = dirName + "_ZP_"+i;
+		 	run("Make Substack...","delete slices=1-25"); 
+			title = dirName + "_TP_"+i;
 			saveAs("tiff", dir+title);
 			close();
 			for(k=0; k<n_groups; k++){
