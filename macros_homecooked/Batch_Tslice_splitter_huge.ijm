@@ -12,10 +12,12 @@ function Merge_stacks(path, name_flag, nfile){
 macro "Tslice_splitter" {
 	// Using substack function. 
 	run("Close All");
-	nMed=getNumber("Slices per stack", 26);
+	//nMed=getNumber("Slices per stack", 26);
+	nMed = 26;
 	n_groups = 3;
 	print(nMed);
 	dir = getDirectory("Choose a Directory ");
+	//dir = "D:/Data\\2017-10-19\\B3_FB_TS\\";
 	list = getFileList(dir); // An array containing the names of the files (hyperstacks).
 	dirName = File.getName(dir); 
 	print(dirName);
@@ -89,6 +91,7 @@ macro "Tslice_splitter" {
 		ord_group++;
 	} // end while
 
+	
 	for(i=0;i<nMed;i++){
 			merge_ID = Merge_stacks(dir, "_ZP_"+i, n_groups);
 			selectImage(merge_ID);
@@ -100,6 +103,7 @@ macro "Tslice_splitter" {
 			}
 	}	// end for
 	
+	run("Close All");
 		
 	/*for(i=0;i<list.length;i++){
 			print(dir+list[i]);	
