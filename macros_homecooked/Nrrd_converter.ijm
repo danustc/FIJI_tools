@@ -1,6 +1,6 @@
 macro "Nrrd_converter"{
 	run("Close All");
-	dir = getDirectory("Choose a Directory ");
+	dir = getDirectory("Choose a directory ");
 	list = getFileList(dir); // An array containing the names of the files (hyperstacks).
 	dirName = File.getName(dir); 
 	for(i=0;i<list.length;i++){
